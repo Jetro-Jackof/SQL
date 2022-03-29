@@ -1,4 +1,5 @@
-select location, date, total_cases, new_cases, total_deaths, population
+#Explore data
+select *
 from coviddeaths
  
  #Look for total cases vs total deaths (percentage)
@@ -19,3 +20,18 @@ from coviddeaths
 group by location, population
 order by infection_percentage desc
 
+#Show Countries with highest Death count per population
+select location, max(total_deaths) as deaths_per_country
+from coviddeaths
+#Problem Europe, North and South America are not countries whats the problem? our database has a continent name in location
+#fix with where clause
+where location not like '%America' AND location not like 'Europe'
+group by location
+order by deaths_per_country desc
+
+#Show continent with highest Death count per population
+select continent, max(total_deaths) as deaths_per_country
+from coviddeaths
+where continent is not null
+group by continent
+order by deaths_per_country desc
