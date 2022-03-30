@@ -35,3 +35,37 @@ from coviddeaths
 where continent is not null
 group by continent
 order by deaths_per_country desc
+
+#**Global numbers**
+
+#total of new cases, new deaths and percentage of them around the world
+select date, sum(new_cases) as 'new cases', sum(new_deaths) as 'new deaths', sum(new_deaths)/sum(new_cases)*100 as Death_percentage
+from coviddeaths
+where continent is not Null
+Group by date
+order by date
+
+# total of new deaths around the world
+select sum(new_cases) as 'new cases', sum(new_deaths) as 'new deaths', sum(new_deaths)/sum(new_cases)*100 as Death_percentage
+from coviddeaths
+where continent is not Null
+order by 1,2
+
+###########################--- Covid vaccination data
+
+select * from covidvaccination
+
+#join both tables (location and date)
+
+select dt.continent, dt.location, dt.date, dt.population, vac.new_vaccinations
+from coviddeaths dt
+join covidvaccination vac
+on dt.location = vac.location
+and dt.date = vac.date
+
+# get the sum of new_vaccinations per location( this goin to sum the total of new vaccinations in that location separated by date)
+select dt.continent, dt.location, dt.date, dt.population, vac.new_vaccinations, sum(vac.new_vaccinations) over (partition by dt.location order by dt.location,dt.date) as 'sum of vaccinations'
+from coviddeaths dt
+join covidvaccination vac
+on dt.location = vac.location
+and dt.date = vac.date
