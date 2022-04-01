@@ -76,18 +76,19 @@ on dt.location = vac.location and dt.date = vac.date
 
 #First let see the datatype from column date
 show fields from coviddeaths
-# show the format of the dates dd/mm/yyyy this is not a correct format, so let change it to dd-mm-yyyy
+# show the format of the dates dd/mm/yyyy this is not a correct format
 select date from coviddeaths
 
 # create new columm, add the correct datatype, delete the old one, change the name of the new column
 Alter TABLE coviddeaths 
 ADD column new_date DATETIME
-SELECT new_date from coviddeaths
+
 update coviddeaths set new_date = DATE_FORMAT( STR_TO_DATE( date ,"%d/%m/%Y" ) ,"%y/%m/%d" )
-SELECT new_date,date from coviddeaths
+
 Alter table coviddeaths DROP column date
 alter table coviddeaths change column new_date date datetime;
 select date from coviddeaths
+
 
 Drop Table if exists PercentPopulationVaccinated
 create Table PercentPopulationVaccinated
@@ -95,9 +96,9 @@ create Table PercentPopulationVaccinated
 Continent varchar(225),
 Location varchar(225),
 date datetime,
-population int,
-new_vaccination int,
-RollingVaccinated int
+population numeric,
+new_vaccination numeric,
+RollingVaccinated numeric
 );
 
 Insert into PercentPopulationVaccinated
@@ -107,6 +108,21 @@ from coviddeaths dt
 join covidvaccination vac
 on dt.location = vac.location and dt.date = vac.date
 
+#Show the new table
 select * from PercentPopulationVaccinated
+
+#------------------- Create a View
+
+Create view PopulationVaccinated as
+select dt.continent, dt.location, dt.date, dt.population, vac.new_vaccinations, sum(vac.new_vaccinations) over (partition by dt.location order by dt.location,
+dt.date) as RollingVaccinated
+from coviddeaths dt
+join covidvaccination vac
+on dt.location = vac.location and dt.date = vac.date
+
+
+
+
+
 
 
