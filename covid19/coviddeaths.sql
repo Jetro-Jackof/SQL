@@ -13,11 +13,20 @@ select location, date, total_cases, population, (total_cases/population)*100 as 
 from coviddeaths
 where location like '%states'
 
+
+select location, sum(new_deaths) as TotalDeathCount
+from coviddeaths
+where location in ('Europe', 'North America', 'South America', 'Asia', 'Africa', 'Oceania')
+group by location
+order by TotalDeathCount desc
+
+
+
 #countries with highest infection rate agains population
  
-Select location, max(total_cases)  highs_infection, population, max((total_cases/population))*100  infection_percentage
+Select location, population, date,  max(total_cases)  highs_infection, max((total_cases/population))*100  infection_percentage
 from coviddeaths
-group by location, population
+group by location, population, date
 order by infection_percentage desc
 
 #Show Countries with highest Death count per population
@@ -68,6 +77,7 @@ select dt.continent, dt.location, dt.date, dt.population, vac.new_vaccinations, 
 from coviddeaths dt
 join covidvaccination vac
 on dt.location = vac.location and dt.date = vac.date
+
 
 #          Temporal table
 #------------------------------------------------------------------------------------------
