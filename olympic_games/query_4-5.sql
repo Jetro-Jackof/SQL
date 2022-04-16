@@ -26,16 +26,20 @@ select * from athlete_events
 select count(distinct Games) from athlete_events
 
 # count how many times a country where in the olympic games
-select Team, NOC 
-from athlete_events 
-order by Team
- 
+select games, nr.regions as country
+from athlete_events ae
+join Noc_Regions nr ON nr.noc=ae.Noc
+group by games, nr.regions
 
-select team as country, count(1) as participation
+ 
+# Result
+select country, count(1) as participation
 from(
-	select distinct Games, Year 
-	from athlete_events 
-	order by year 
+	select games, nr.regions as country
+	from athlete_events ae
+	join Noc_Regions nr ON nr.noc=ae.Noc
+	group by games, nr.regions
 ) sub
 group by country
 order by participation desc
+limit 2
